@@ -12,7 +12,7 @@
 
 <meta name="author" content="Lampros Mouselimis" />
 
-<meta name="date" content="2018-07-02" />
+<meta name="date" content="2018-07-21" />
 
 <title>Extreme Learning Machine</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Extreme Learning Machine</h1>
 <h4 class="author"><em>Lampros Mouselimis</em></h4>
-<h4 class="date"><em>2018-07-02</em></h4>
+<h4 class="date"><em>2018-07-21</em></h4>
 
 
 
@@ -155,7 +155,7 @@ fit_elm =<span class="st"> </span><span class="kw">elm_train</span>(xtr, ytr, <s
 ## The computation of the Moore-Pseudo-inverse starts ...
 ## The computation is finished!
 ## 
-## Time to complete : 0.09112573 secs</code></pre>
+## Time to complete : 0.09782553 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pr_te_elm =<span class="st"> </span><span class="kw">elm_predict</span>(fit_elm, xte)
 
 
@@ -242,7 +242,7 @@ fit_elm_class =<span class="st"> </span><span class="kw">elm_train</span>(xtr_cl
 ## The computation of the Moore-Pseudo-inverse starts ...
 ## The computation is finished!
 ## 
-## Time to complete : 0.03604198 secs</code></pre>
+## Time to complete : 0.03874469 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pr_elm_class =<span class="st"> </span><span class="kw">elm_predict</span>(fit_elm_class, xte_class, <span class="dt">normalize =</span> <span class="ot">FALSE</span>)
 
 pr_elm_class =<span class="st"> </span><span class="kw">max.col</span>(pr_elm_class, <span class="dt">ties.method =</span> <span class="st">&quot;random&quot;</span>)
@@ -286,47 +286,86 @@ x =<span class="st"> </span>mnist[, <span class="op">-</span><span class="kw">nc
 
 y =<span class="st"> </span>mnist[, <span class="kw">ncol</span>(mnist)]
 
-y_expand =<span class="st"> </span><span class="kw">onehot_encode</span>(y)
+<span class="co"># using system('wget..') on a linux OS </span>
+<span class="co">#-------------------------------------</span>
+
+<span class="kw">system</span>(<span class="st">&quot;wget https://raw.githubusercontent.com/mlampros/DataSets/master/mnist.zip&quot;</span>)             
+
+mnist &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="kw">unz</span>(<span class="st">&quot;mnist.zip&quot;</span>, <span class="st">&quot;mnist.csv&quot;</span>), <span class="dt">nrows =</span> <span class="dv">70000</span>, <span class="dt">header =</span> T, 
+                    
+                    <span class="dt">quote =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>)
+
+x =<span class="st"> </span>mnist[, <span class="op">-</span><span class="kw">ncol</span>(mnist)]
+
+y =<span class="st"> </span>mnist[, <span class="kw">ncol</span>(mnist)] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
 
 
+<span class="co"># use the hog-features as input data</span>
+<span class="co">#-----------------------------------</span>
 
-<span class="co"># split the data randomly in train-test</span>
-<span class="co">#--------------------------------------</span>
+hog =<span class="st"> </span>OpenImageR<span class="op">::</span><span class="kw">HOG_apply</span>(x, <span class="dt">cells =</span> <span class="dv">6</span>, <span class="dt">orientations =</span> <span class="dv">9</span>, <span class="dt">rows =</span> <span class="dv">28</span>, <span class="dt">columns =</span> <span class="dv">28</span>, <span class="dt">threads =</span> <span class="dv">6</span>)
 
-idx_train =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(y_expand), <span class="kw">round</span>(<span class="fl">0.85</span> <span class="op">*</span><span class="st"> </span><span class="kw">nrow</span>(y_expand)))
-
-idx_test =<span class="st"> </span><span class="kw">setdiff</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(y_expand), idx_train)
-
-fit =<span class="st"> </span><span class="kw">elm_train</span>(<span class="kw">as.matrix</span>(x[idx_train, ]), y_expand[idx_train, ], <span class="dt">nhid =</span> <span class="dv">2500</span>, 
-                
-                <span class="dt">actfun =</span> <span class="st">'relu'</span>, <span class="dt">init_weights =</span> <span class="st">'uniform_negative'</span>, <span class="dt">bias =</span> <span class="ot">TRUE</span>,
-                
-                <span class="dt">verbose =</span> <span class="ot">TRUE</span>)
+y_expand =<span class="st"> </span>elmNNRcpp<span class="op">::</span><span class="kw">onehot_encode</span>(y <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)
 
 
-<span class="co"># Input weights will be initialized ...</span>
-<span class="co"># Dot product of input weights and data starts ...</span>
-<span class="co"># Bias will be added to the dot product ...</span>
-<span class="co"># 'relu' activation function will be utilized ...</span>
-<span class="co"># The computation of the Moore-Pseudo-inverse starts ...</span>
-<span class="co"># The computation is finished!</span>
-<span class="co"># </span>
-<span class="co"># Time to complete : 1.607153 mins </span>
+<span class="co"># 4-fold cross-validation</span>
+<span class="co">#------------------------</span>
+
+folds =<span class="st"> </span>KernelKnn<span class="op">:::</span><span class="kw">class_folds</span>(<span class="dt">folds =</span> <span class="dv">4</span>, <span class="kw">as.factor</span>(y))
+<span class="kw">str</span>(folds)
+
+START =<span class="st"> </span><span class="kw">Sys.time</span>()
 
 
-<span class="co"># predictions for test-data</span>
-<span class="co">#--------------------------</span>
+fit =<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(folds), <span class="cf">function</span>(x) {
+  
+  <span class="kw">cat</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>); <span class="kw">cat</span>(<span class="st">'fold'</span>, x, <span class="st">'starts ....'</span>, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)
+  
+  tmp_fit =<span class="st"> </span>elmNNRcpp<span class="op">::</span><span class="kw">elm_train</span>(<span class="kw">as.matrix</span>(hog[<span class="kw">unlist</span>(folds[<span class="op">-</span>x]), ]), y_expand[<span class="kw">unlist</span>(folds[<span class="op">-</span>x]), ], 
+  
+                                 <span class="dt">nhid =</span> <span class="dv">2500</span>, <span class="dt">actfun =</span> <span class="st">'relu'</span>, <span class="dt">init_weights =</span> <span class="st">'uniform_negative'</span>,
+                                 
+                                 <span class="dt">bias =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)
+  
+  <span class="kw">cat</span>(<span class="st">'******************************************'</span>, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)
+  
+  tmp_fit
+})
 
-pr_test =<span class="st"> </span><span class="kw">elm_predict</span>(fit, <span class="dt">newdata =</span> <span class="kw">as.matrix</span>(x[idx_test, ]))
+END =<span class="st"> </span><span class="kw">Sys.time</span>()
 
-pr_max_col =<span class="st"> </span><span class="kw">max.col</span>(pr_test, <span class="dt">ties.method =</span> <span class="st">&quot;random&quot;</span>)
+END <span class="op">-</span><span class="st"> </span>START
 
-y_true =<span class="st"> </span><span class="kw">max.col</span>(y_expand[idx_test, ])
+<span class="co"># Time difference of 5.698552 mins</span>
 
 
-<span class="kw">cat</span>(<span class="st">'Accuracy ( Mnist data ) :'</span>, <span class="kw">mean</span>(pr_max_col <span class="op">==</span><span class="st"> </span>y_true), <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)
+<span class="kw">str</span>(fit)
 
-<span class="co"># Accuracy ( Mnist data ) : 96.13  </span></code></pre></div>
+
+<span class="co"># predictions for 4-fold cross validation</span>
+<span class="co">#----------------------------------------</span>
+
+test_acc =<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(fit), <span class="cf">function</span>(x) {
+  
+  pr_te =<span class="st"> </span>elmNNRcpp<span class="op">::</span><span class="kw">elm_predict</span>(fit[[x]], <span class="dt">newdata =</span> <span class="kw">as.matrix</span>(hog[folds[[x]], ]))
+  
+  pr_max_col =<span class="st"> </span><span class="kw">max.col</span>(pr_te, <span class="dt">ties.method =</span> <span class="st">&quot;random&quot;</span>)
+  
+  y_true =<span class="st"> </span><span class="kw">max.col</span>(y_expand[folds[[x]], ])
+  
+  <span class="kw">mean</span>(pr_max_col <span class="op">==</span><span class="st"> </span>y_true)
+}))
+  
+  
+
+test_acc
+
+<span class="co"># [1] 0.9825143 0.9848571 0.9824571 0.9822857</span>
+
+
+<span class="kw">cat</span>(<span class="st">'Accuracy ( Mnist data ) :'</span>, <span class="kw">round</span>(<span class="kw">mean</span>(test_acc) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">2</span>), <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)
+
+<span class="co"># Accuracy ( Mnist data ) : 98.3</span></code></pre></div>
 </div>
 
 

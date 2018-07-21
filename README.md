@@ -16,4 +16,19 @@ install.packages("elmNNRcpp")
 ```
 <br>
 
+and to download the latest version from Github use the *install_github* function of the devtools package,
+<br><br>
+
+```R
+
+devtools::install_github('mlampros/elmNNRcpp')
+
+
+```
+<br>
+
+Use the following link to report bugs/issues,
+<br><br>
+
+[https://github.com/mlampros/elmNNRcpp/issues](https://github.com/mlampros/elmNNRcpp/issues)
 
