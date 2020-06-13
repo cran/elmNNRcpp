@@ -1,4 +1,4 @@
-## ---- eval=T-------------------------------------------------------------
+## ---- eval=T------------------------------------------------------------------
 
 # load the data and split it in two parts
 #----------------------------------------
@@ -70,7 +70,7 @@ cat('the rmse error for extreme-learning-machine is :', rmse(yte, pr_te_elm[, 1]
 cat('the rmse error for liner-model is :', rmse(yte, pr_te_lm), '\n')
 
 
-## ---- eval=T-------------------------------------------------------------
+## ---- eval=T------------------------------------------------------------------
 
 
 # load the data
@@ -134,7 +134,7 @@ cat('the accuracy for extreme-learning-machine is :', mean(yte_class == pr_elm_c
 cat('the accuracy for glm is :', mean(yte_class == pr_glm), '\n')
 
 
-## ---- eval = F, echo = T-------------------------------------------------
+## ---- eval = F, echo = T------------------------------------------------------
 #  
 #  
 #  # using system('wget..') on a linux OS

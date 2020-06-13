@@ -72,30 +72,15 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// randomMatrix
-arma::mat randomMatrix(int nCols, int nRows, double minValue, double maxValue);
-RcppExport SEXP _elmNNRcpp_randomMatrix(SEXP nColsSEXP, SEXP nRowsSEXP, SEXP minValueSEXP, SEXP maxValueSEXP) {
+// uniform_negative
+arma::mat uniform_negative(int n_rows, int n_cols);
+RcppExport SEXP _elmNNRcpp_uniform_negative(SEXP n_rowsSEXP, SEXP n_colsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type nCols(nColsSEXP);
-    Rcpp::traits::input_parameter< int >::type nRows(nRowsSEXP);
-    Rcpp::traits::input_parameter< double >::type minValue(minValueSEXP);
-    Rcpp::traits::input_parameter< double >::type maxValue(maxValueSEXP);
-    rcpp_result_gen = Rcpp::wrap(randomMatrix(nCols, nRows, minValue, maxValue));
-    return rcpp_result_gen;
-END_RCPP
-}
-// uniform_vector
-std::vector<double> uniform_vector(int iters, double minValue, double maxValue);
-RcppExport SEXP _elmNNRcpp_uniform_vector(SEXP itersSEXP, SEXP minValueSEXP, SEXP maxValueSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type iters(itersSEXP);
-    Rcpp::traits::input_parameter< double >::type minValue(minValueSEXP);
-    Rcpp::traits::input_parameter< double >::type maxValue(maxValueSEXP);
-    rcpp_result_gen = Rcpp::wrap(uniform_vector(iters, minValue, maxValue));
+    Rcpp::traits::input_parameter< int >::type n_rows(n_rowsSEXP);
+    Rcpp::traits::input_parameter< int >::type n_cols(n_colsSEXP);
+    rcpp_result_gen = Rcpp::wrap(uniform_negative(n_rows, n_cols));
     return rcpp_result_gen;
 END_RCPP
 }

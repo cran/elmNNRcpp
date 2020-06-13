@@ -25,12 +25,8 @@ set_seed <- function(seed) {
     invisible(.Call(`_elmNNRcpp_set_seed`, seed))
 }
 
-randomMatrix <- function(nCols, nRows, minValue, maxValue) {
-    .Call(`_elmNNRcpp_randomMatrix`, nCols, nRows, minValue, maxValue)
-}
-
-uniform_vector <- function(iters, minValue, maxValue) {
-    .Call(`_elmNNRcpp_uniform_vector`, iters, minValue, maxValue)
+uniform_negative <- function(n_rows, n_cols) {
+    .Call(`_elmNNRcpp_uniform_negative`, n_rows, n_cols)
 }
 
 activation_functions <- function(tempH, actfun, alpha = 0.0) {
