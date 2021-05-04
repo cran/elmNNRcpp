@@ -12,10 +12,35 @@
 
 <meta name="author" content="Lampros Mouselimis" />
 
-<meta name="date" content="2020-06-13" />
+<meta name="date" content="2021-05-03" />
 
 <title>Extreme Learning Machine</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -106,6 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -303,7 +329,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Extreme Learning Machine</h1>
 <h4 class="author">Lampros Mouselimis</h4>
-<h4 class="date">2020-06-13</h4>
+<h4 class="date">2021-05-03</h4>
 
 
 
@@ -388,7 +414,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## The computation of the Moore-Pseudo-inverse starts ...
 ## The computation is finished!
 ## 
-## Time to complete : 0.07642627 secs</code></pre>
+## Time to complete : 0.06074715 secs</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>pr_te_elm =<span class="st"> </span><span class="kw">elm_predict</span>(fit_elm, xte)</span>
 <span id="cb5-2"><a href="#cb5-2"></a></span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
@@ -475,7 +501,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## The computation of the Moore-Pseudo-inverse starts ...
 ## The computation is finished!
 ## 
-## Time to complete : 0.03475618 secs</code></pre>
+## Time to complete : 0.03459501 secs</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>pr_elm_class =<span class="st"> </span><span class="kw">elm_predict</span>(fit_elm_class, xte_class, <span class="dt">normalize =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a>pr_elm_class =<span class="st"> </span><span class="kw">max.col</span>(pr_elm_class, <span class="dt">ties.method =</span> <span class="st">&quot;random&quot;</span>)</span>
